@@ -5,6 +5,7 @@ import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.goddardlabs.popularmovies.popularmovies2.Adapters.MoviesAdapter;
@@ -12,13 +13,14 @@ import com.goddardlabs.popularmovies.popularmovies2.Net.MoviesAsyncTask;
 import com.goddardlabs.popularmovies.popularmovies2.Net.OnTaskCompleted;
 import com.goddardlabs.popularmovies.popularmovies2.Parcelables.Movie;
 
+import java.util.ArrayList;
+
 import static com.goddardlabs.popularmovies.popularmovies2.Net.Network.isNetworkAvailable;
 
 public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
     private MoviesAdapter movie_adapter;
     private RecyclerView recycler_view;
     private Parcelable list_state;
-    private Movie[] movies;
 
     int pageNumber = 1;
 
@@ -53,17 +55,18 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
     }
 
     @Override
-    public void onTaskCompleted(Movie[] movies) {
+    public void onTaskCompleted(ArrayList<Movie> movies) {
         if(movie_adapter == null) {
+            Log.i("Movie Adapater : ", "loaded");
             movie_adapter = new MoviesAdapter(this, movies);
             recycler_view.setAdapter(movie_adapter);
+            this.pageNumber++;
         }
 
         else {
-            for(Movie movie : movies) {
-                movie_adapter.add(movie);
-            }
+            movie_adapter.addAll(movies);
             movie_adapter.notifyDataSetChanged();
+            this.pageNumber++;
         }
     }
 

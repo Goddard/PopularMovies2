@@ -19,8 +19,9 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 
-public class MoviesAsyncTask extends AsyncTask<String, Void, Movie[]> {
+public class MoviesAsyncTask extends AsyncTask<String, Void, ArrayList<Movie>> {
     private final String LOG = MoviesAsyncTask.class.getSimpleName();
     private final OnTaskCompleted listener;
     //might not need
@@ -33,7 +34,7 @@ public class MoviesAsyncTask extends AsyncTask<String, Void, Movie[]> {
     }
 
     @Override
-    protected Movie[] doInBackground(String... params) {
+    protected ArrayList<Movie> doInBackground(String... params) {
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
 
@@ -80,21 +81,22 @@ public class MoviesAsyncTask extends AsyncTask<String, Void, Movie[]> {
 //
 //    }
 
-    private Movie[] getMoviesJson(String moviesJsonStr) throws JSONException {
+    private ArrayList<Movie> getMoviesJson(String moviesJsonStr) throws JSONException {
         JSONObject moviesJson = new JSONObject(moviesJsonStr);
         JSONArray resultsArray = moviesJson.getJSONArray("results");
 
-        Movie[] movies = new Movie[resultsArray.length()];
+//        Movie[] movies = new Movie[resultsArray.length()];
+        ArrayList<Movie> movies = new ArrayList<Movie>();
         for (int i = 0; i < resultsArray.length(); i++) {
             JSONObject movieInfo = resultsArray.getJSONObject(i);
 
-            movies[i] = new Movie();
-            movies[i].setTitle(movieInfo.getString("title"));
-            movies[i].setPosterPath(movieInfo.getString("poster_path"));
-            movies[i].setOverview(movieInfo.getString("overview"));
-            movies[i].setVoteAverage(movieInfo.getString("vote_average"));
-            movies[i].setReleaseDate(movieInfo.getString("release_date"));
-            movies[i].setBack_drop_path(movieInfo.getString("backdrop_path"));
+            movies.add(new Movie());
+            movies.get(i).setTitle(movieInfo.getString("title"));
+            movies.get(i).setPosterPath(movieInfo.getString("poster_path"));
+            movies.get(i).setOverview(movieInfo.getString("overview"));
+            movies.get(i).setVoteAverage(movieInfo.getString("vote_average"));
+            movies.get(i).setReleaseDate(movieInfo.getString("release_date"));
+            movies.get(i).setBack_drop_path(movieInfo.getString("backdrop_path"));
         }
 
         return movies;
@@ -125,7 +127,7 @@ public class MoviesAsyncTask extends AsyncTask<String, Void, Movie[]> {
     }
 
     @Override
-    protected void onPostExecute(Movie[] movies) {
+    protected void onPostExecute(ArrayList<Movie> movies) {
         super.onPostExecute(movies);
 
         this.listener.onTaskCompleted(movies);

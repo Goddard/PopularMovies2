@@ -12,17 +12,15 @@ import com.goddardlabs.popularmovies.popularmovies2.Parcelables.Movie;
 import com.goddardlabs.popularmovies.popularmovies2.R;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewHolder> {
-    private Movie[] movies;
+    private ArrayList<Movie> movies;
     private MainActivity mainActivity;
 
-    public MoviesAdapter(MainActivity mainActivity, Movie[] movies) {
+    public MoviesAdapter(MainActivity mainActivity, ArrayList<Movie> movies) {
         this.mainActivity = mainActivity;
         this.movies = movies;
-    }
-
-    public Movie[] getMovies() {
-        return this.movies;
     }
 
     @Override
@@ -39,26 +37,32 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
             @Override
             public void run() {
                 Picasso.with(holder.mIvMovie.getContext())
-                        .load(movies[pos].getPosterPath())
+                        .load(movies.get(pos).getPosterPath())
                         .placeholder(R.drawable.ic_launcher_foreground)
                         .error(R.drawable.ic_launcher_foreground)
                         .into(holder.mIvMovie);
             }
         });
 
-        if (position == movies.length - 1) {
+        if (position == movies.size() - 1) {
             this.mainActivity.getMovies();
         }
     }
 
+    @SuppressWarnings("unused")
     public final void add(Movie movie) {
-        movies[movies.length] = movie;
+        this.movies.add(movie);
 //        notifyDataSetChanged();
+    }
+
+    @SuppressWarnings("unused")
+    public final void addAll(ArrayList<Movie> movies) {
+        this.movies.addAll(movies);
     }
 
     @Override
     public int getItemCount() {
-        return this.movies.length;
+        return this.movies.size();
     }
 
     class MovieViewHolder extends RecyclerView.ViewHolder {
