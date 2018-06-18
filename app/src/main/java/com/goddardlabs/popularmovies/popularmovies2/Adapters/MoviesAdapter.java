@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.goddardlabs.popularmovies.popularmovies2.MainActivity;
 import com.goddardlabs.popularmovies.popularmovies2.Parcelables.Movie;
@@ -17,10 +18,15 @@ import java.util.ArrayList;
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewHolder> {
     private ArrayList<Movie> movies;
     private MainActivity mainActivity;
+    private Toast mToast;
 
     public MoviesAdapter(MainActivity mainActivity, ArrayList<Movie> movies) {
         this.mainActivity = mainActivity;
         this.movies = movies;
+    }
+
+    public ArrayList<Movie> getMovies() {
+        return movies;
     }
 
     @Override
@@ -44,6 +50,22 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
             }
         });
 
+        holder.itemView.setTag(pos);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mToast != null) {
+                    mToast.cancel();
+                }
+
+                String toastMessage = "Item #" + view.getTag() + " clicked.";
+                mToast = Toast.makeText(mainActivity, toastMessage, Toast.LENGTH_LONG);
+
+                mToast.show();
+//                getMovieAndShowDetails((int) view.getTag(), holder);
+            }
+        });
+
         if (position == movies.size() - 1) {
             this.mainActivity.getMovies();
         }
@@ -52,12 +74,13 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
     @SuppressWarnings("unused")
     public final void add(Movie movie) {
         this.movies.add(movie);
-//        notifyDataSetChanged();
+        notifyDataSetChanged();
     }
 
     @SuppressWarnings("unused")
     public final void addAll(ArrayList<Movie> movies) {
         this.movies.addAll(movies);
+        notifyDataSetChanged();
     }
 
     @Override

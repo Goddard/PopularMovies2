@@ -24,8 +24,6 @@ import java.util.ArrayList;
 public class MoviesAsyncTask extends AsyncTask<String, Void, ArrayList<Movie>> {
     private final String LOG = MoviesAsyncTask.class.getSimpleName();
     private final OnTaskCompleted listener;
-    //might not need
-    private String page = "1";
 
     public MoviesAsyncTask(OnTaskCompleted listener) {
         super();
@@ -77,15 +75,10 @@ public class MoviesAsyncTask extends AsyncTask<String, Void, ArrayList<Movie>> {
         return null;
     }
 
-//    private Movie[] getMoreMoviesJson(String moviesJsonStr) {
-//
-//    }
-
     private ArrayList<Movie> getMoviesJson(String moviesJsonStr) throws JSONException {
         JSONObject moviesJson = new JSONObject(moviesJsonStr);
         JSONArray resultsArray = moviesJson.getJSONArray("results");
 
-//        Movie[] movies = new Movie[resultsArray.length()];
         ArrayList<Movie> movies = new ArrayList<Movie>();
         for (int i = 0; i < resultsArray.length(); i++) {
             JSONObject movieInfo = resultsArray.getJSONObject(i);
@@ -116,7 +109,7 @@ public class MoviesAsyncTask extends AsyncTask<String, Void, ArrayList<Movie>> {
     private URL getApiMovieDetailUrl(String[] parameters) throws MalformedURLException {
         Uri base = Uri.parse("https://api.themoviedb.org/3/movie/");
         Uri.Builder buildUpon = base.buildUpon();
-//        550?append_to_response=videos,reviews&&api_key=d01c7731919bd4efcaf19322b51aa3ee
+//        550?append_to_response=videos,reviews&&api_key=
         //movie id
         buildUpon.appendPath(parameters[0]);
         buildUpon.appendQueryParameter("append_to_response", "videos,reviews");

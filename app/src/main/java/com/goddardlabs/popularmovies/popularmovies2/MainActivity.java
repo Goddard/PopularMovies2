@@ -5,7 +5,6 @@ import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.goddardlabs.popularmovies.popularmovies2.Adapters.MoviesAdapter;
@@ -22,6 +21,8 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
     private RecyclerView recycler_view;
     private Parcelable list_state;
 
+    private Toast mToast;
+
     int pageNumber = 1;
 
     @Override
@@ -37,19 +38,19 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
         if (savedInstanceState == null) {
             getMovies();
         } else {
-            Parcelable[] parcelable = savedInstanceState.getParcelableArray(getString(R.string.movie_type_key));
+            ArrayList<Parcelable> parcelable = savedInstanceState.getParcelableArrayList(getString(R.string.movie_type_key));
 
             if (parcelable != null) {
+                int numMovieObjects = parcelable.size();
+                ArrayList<Movie> movies = new ArrayList<Movie>();
+                for (int i = 0; i < numMovieObjects; i++) {
+                    movies.add((Movie) parcelable.get(i));
+                }
+
+                movie_adapter = new MoviesAdapter(this, movies);
+                recycler_view.setAdapter(movie_adapter);
+                getMovies();
                 list_state = savedInstanceState.getParcelable("ListState");
-//                int numMovieObjects = parcelable.length;
-//                totalItems = numMovieObjects;
-//                Movie[] movies = new Movie[numMovieObjects];
-//                for (int i = 0; i < numMovieObjects; i++) {
-//                    movies[i] = (Movie) parcelable[i];
-//                }
-//
-//                movie_adapter = new MoviesAdapter(movies);
-//                recycler_view.setAdapter(movie_adapter);
             }
         }
     }
@@ -57,7 +58,6 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
     @Override
     public void onTaskCompleted(ArrayList<Movie> movies) {
         if(movie_adapter == null) {
-            Log.i("Movie Adapater : ", "loaded");
             movie_adapter = new MoviesAdapter(this, movies);
             recycler_view.setAdapter(movie_adapter);
             this.pageNumber++;
@@ -65,7 +65,6 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
 
         else {
             movie_adapter.addAll(movies);
-            movie_adapter.notifyDataSetChanged();
             this.pageNumber++;
         }
     }
@@ -80,24 +79,19 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-//        getMovies();
-    }
-
-    @Override
     protected void onSaveInstanceState(Bundle outState) {
-//        int numMovieObjects = recycler_view.getChildCount();
+//        int numMovieObjects = movie_adapter.getItemCount();
 //        if (numMovieObjects > 0) {
-//            Movie[] movies = new Movie[numMovieObjects];
+//            ArrayList<Movie> movies = new ArrayList<Movie>();
 //            for (int i = 0; i < numMovieObjects; i++) {
-////                movies[i] = (Movie) recycler_view.getItemAtPosition(i);
+//                movies.add((Movie) recycler_view.getChildAt(i));
 //            }
 //
-//            outState.putParcelableArray(getString(R.string.movie_type_key), movies);
+//
 //        }
-        super.onSaveInstanceState(outState);
 
+        outState.putParcelableArrayList(getString(R.string.movie_type_key), movie_adapter.getMovies());
         outState.putParcelable("ListState", recycler_view.getLayoutManager().onSaveInstanceState());
+        super.onSaveInstanceState(outState);
     }
 }
