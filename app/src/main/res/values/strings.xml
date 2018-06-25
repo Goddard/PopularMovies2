@@ -11,6 +11,8 @@
     <string name="sort_rating_label">Highest Rated</string>
     <string name="sort_popular_key">popularity.desc</string>
     <string name="sort_rating_key">vote_average.desc</string>
+    <string name="sort_favorite_label">Favorites</string>
+    <string name="sort_favorite_key">favorite.desc</string>
 
     <string name="no_internet">No Internet Brother!</string>
 
@@ -18,4 +20,7 @@
     <string name="error">Error</string>
     <string name="no_summary">No Summary</string>
     <string name="no_release_date">No Release Date in database</string>
+
+    <string name="saved">Saved</string>
+    <string name="save">Save</string>
 </resources>

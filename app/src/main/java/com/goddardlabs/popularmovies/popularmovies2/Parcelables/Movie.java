@@ -3,6 +3,8 @@ package com.goddardlabs.popularmovies.popularmovies2.Parcelables;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
+
 import static com.goddardlabs.popularmovies.popularmovies2.Net.Network.IMAGE_URL_BACKDROP_BASE;
 import static com.goddardlabs.popularmovies.popularmovies2.Net.Network.IMAGE_URL_BASE;
 
@@ -34,6 +36,7 @@ public class Movie implements Parcelable {
     public String getPosterPath() {
         return IMAGE_URL_BASE + poster_path;
     }
+    public String getPosterJsonPath() { return poster_path; };
     public void setPosterPath(String poster_path) {
         this.poster_path = poster_path;
     }
@@ -69,13 +72,13 @@ public class Movie implements Parcelable {
     public String getVideo_id() { return video_id; }
     public void setVideo_id(String video_id) { this.video_id = video_id; }
 
-    private Videos videos;
-    public Videos getVideos() { return videos; }
-    public void setVideos(Videos videos) { this.videos = videos; }
+    private ArrayList<Video> videos;
+    public ArrayList<Video> getVideos() { return videos; }
+    public void setVideos(ArrayList<Video> videos) { this.videos = videos; }
 
-    private Reviews reviews;
-    public Reviews getReviews() { return reviews; }
-    public void setReviews(Reviews reviews) { this.reviews = reviews; }
+    private ArrayList<Review> reviews;
+    public ArrayList<Review> getReviews() { return reviews; }
+    public void setReviews(ArrayList<Review> reviews) { this.reviews = reviews; }
 
     public Movie() {
         this.id = 0;
@@ -85,17 +88,26 @@ public class Movie implements Parcelable {
         this.back_drop_path = "";
         this.release_date = "";
         this.vote_average = "0.0";
-        this.videos = new Videos();
-        this.reviews = new Reviews();
+        this.videos = new ArrayList<Video>();
+        this.reviews = new ArrayList<Review>();
     }
 
     private Movie(Parcel parcel) {
+        this.id = parcel.readInt();
         this.title = parcel.readString();
         this.poster_path = parcel.readString();
         this.overview = parcel.readString();
         this.vote_average = parcel.readString();
         this.release_date = parcel.readString();
         this.back_drop_path = parcel.readString();
+
+        this.videos = new ArrayList<Video>();
+        this.reviews = new ArrayList<Review>();
+        parcel.readTypedList(this.videos, Video.CREATOR);
+        parcel.readTypedList(this.reviews, Review.CREATOR);
+
+//        this.videos = parcel.readArrayList(this.videos, Video.class.getClassLoader());
+//        this.reviews = parcel.readArrayList(Review.class.getClassLoader());
     }
 
     @Override
@@ -105,12 +117,16 @@ public class Movie implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(this.id);
         parcel.writeString(this.title);
         parcel.writeString(this.poster_path);
         parcel.writeString(this.overview);
         parcel.writeString(this.vote_average);
         parcel.writeString(this.release_date);
         parcel.writeString(this.back_drop_path);
+
+        parcel.writeTypedList(this.videos);
+        parcel.writeTypedList(this.reviews);
     }
 
     public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
