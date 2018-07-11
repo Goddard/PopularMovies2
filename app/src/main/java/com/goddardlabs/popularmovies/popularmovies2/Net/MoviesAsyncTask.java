@@ -8,6 +8,7 @@ import com.goddardlabs.popularmovies.popularmovies2.BuildConfig;
 import com.goddardlabs.popularmovies.popularmovies2.Parcelables.Movie;
 import com.goddardlabs.popularmovies.popularmovies2.Parcelables.Review;
 import com.goddardlabs.popularmovies.popularmovies2.Parcelables.Video;
+import com.goddardlabs.popularmovies.popularmovies2.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -171,6 +172,14 @@ public class MoviesAsyncTask extends AsyncTask<String, Void, TransferContainer> 
 
     private URL getApiMovieUrl(String[] parameters) throws MalformedURLException {
         Uri base = Uri.parse("https://api.themoviedb.org/3/discover/movie?");
+        Log.i("param", parameters[1]);
+        if(parameters[1].equals(R.string.sort_popular_key)) {
+            base = Uri.parse("https://api.themoviedb.org/3/movie/popular?");
+        } else if(parameters[1].equals("vote_average.desc")) {
+            Log.i("test", parameters[1]);
+            base = Uri.parse("https://api.themoviedb.org/3/movie/top_rated?");
+            parameters[1] = "popularity.desc";
+        }
         Uri.Builder buildUpon = base.buildUpon();
         buildUpon.appendQueryParameter("api_key", BuildConfig.API_KEY);
         buildUpon.appendQueryParameter("sort_by", parameters[1]);
