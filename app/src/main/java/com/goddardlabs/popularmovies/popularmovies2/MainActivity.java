@@ -59,6 +59,23 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1) {
+            if (resultCode == RESULT_OK) {
+                if (data.hasExtra("changed")) {
+                    String temp_changed = data.getExtras().getString("changed");
+                    if (temp_changed != null && temp_changed.equals("true") && preferences.getSortType(this).equals("favorite.desc")) {
+                        Intent intent = getIntent();
+                        finish();
+                        startActivity(intent);
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
@@ -163,7 +180,7 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
                     intent.putExtra(getString(R.string.movie_type_key), transferContainer.getMovies().get(0));
                 }
 
-                startActivity(intent);
+                startActivityForResult(intent, 1);
             }
         }
     }

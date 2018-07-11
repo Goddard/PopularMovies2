@@ -30,10 +30,15 @@ public class MovieDetailActivity extends AppCompatActivity {
     private Movie movie;
     private Button fav_button;
     private MainActivity mainActivity;
+    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        this.intent = new Intent();
+        setResult(RESULT_CANCELED, intent);
+
         setContentView(R.layout.activity_movie_detail);
 
         final ConstraintLayout constraint_layout_main_activity = findViewById(R.id.activity_background);
@@ -215,5 +220,8 @@ public class MovieDetailActivity extends AppCompatActivity {
             db.insert(MoviesContract.MoviesEntry.TABLE_NAME, null, contentValues);
         }
         db.close();
+
+        this.intent.putExtra("changed", "true");
+        setResult(RESULT_OK, this.intent);
     }
 }
